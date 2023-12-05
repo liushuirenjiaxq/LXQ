@@ -1,0 +1,163 @@
+#include <bits/stdc++.h>
+#include <deque>
+using namespace std;
+int num = 1;
+int now_time = 0;
+
+//作业到达时间、作业要求服务时间、开始运行时间、结束运行时间、
+//周转时间、带权周转时间、是否已运行标志
+struct process{
+    int id;
+    float arrive_time;
+    float need_time;
+    float start_time;
+    float end_time;
+    float revolve_time;
+    float revolve_power_time;
+    int flag;// 1为已运行  0为未运行
+};
+process arrayTask[4];//排列顺序为数组顺序
+
+deque<process> arr;
+
+void GetTask(int a){
+    process str;
+    cout<<"输入进程"<<num++<<"数据："<<endl;
+    cout<<"作业到达时间：";
+    cin>>str.arrive_time;
+    cout<<"作业要求服务时间：";
+    cin>>str.need_time;
+    str.flag = 0;
+    str.id = a+1;
+    arrayTask[a] = str;
+    cout<<endl;
+}
+
+int pan(int a){
+    if(a != 1 && a != 2 && a != 3){
+        cout<<"无效数字"<<endl;
+        return 1;
+    }
+    return 0;
+}
+
+bool arrive_time_cmp(process a,process b){
+    return a.arrive_time < b.arrive_time;
+}
+bool need_time_cmp(process a,process b){
+    return a.need_time < b.need_time;
+}
+
+int fcfs(){
+    sort(arrayTask,arrayTask+4,arrive_time_cmp);
+//    for(int i=0;i<4;i++){
+//        cout<<arrayTask[i].arrive_time<<endl;
+//    }
+    while(1){
+        for(int i=0;i<4;i++){
+            if(arrayTask[i].flag == 0 && arrayTask[i].arrive_time <= now_time){
+                return arrayTask[i].id;
+            }
+        }
+        now_time++;
+    }
+}
+int spf(){
+    sort(arrayTask,arrayTask+4,need_time_cmp);
+    while(1){
+        for(int i=0;i<4;i++){
+            if(arrayTask[i].flag == 0 && arrayTask[i].arrive_time <= now_time){
+                return arrayTask[i].id;
+            }
+        }
+        now_time++;
+    }
+}
+//高相应比优先调度算法
+int hrrn(){
+    while(1){
+        float mx=0;//最高响应比
+        int id=0;
+        for(int i=0;i<4;i++){
+            float wait_time = now_time - arrayTask[i].arrive_time;
+            if(arrayTask[i].flag == 0 && wait_time >= 0){
+                float temp = (wait_time+arrayTask[i].need_time)/arrayTask[i].need_time;
+                if(temp>mx){
+                    mx=temp;
+                    id=arrayTask[i].id;
+                }
+            }
+        }
+        if(id!=0){
+            return id;
+        }
+        now_time++;
+    }
+}
+
+int GetNextTask(){
+    int mask;
+    cout<<"先来先服务调度算法,请输入 1 "<<endl;
+    cout<<"短作业优化调度算法,请输入 2 "<<endl;
+    cout<<"优化调度算法,请输入 3 "<<endl;
+    cin>>mask;
+    if(pan(mask)){
+        cout<<"重新输入：";
+        cin>>mask;
+    }
+
+    if(mask == 1){
+        return fcfs();
+    }else if(mask == 2){
+        return spf();
+    }else if(mask == 3){
+        return hrrn();
+    }
+
+    cout<<endl;
+}
+
+void RunTask(int id){
+    for(int i=0;i<4;i++){sort(arrayTask,arrayTask+4,arrive_time_cmp);
+        if(arrayTask[i].id == id){
+            arrayTask[i].flag = 1;
+            //计算数据
+            arrayTask[i].start_time = now_time;
+            now_time += arrayTask[i].need_time;
+            arrayTask[i].revolve_time = now_time - arrayTask[i].arrive_time;
+            arrayTask[i].revolve_power_time = arrayTask[i].revolve_time/arrayTask[i].need_time;
+            //cout<<arrayTask[i].revolve_time<<endl;
+            arr.push_back(arrayTask[i]);
+        }
+    }
+}
+
+void PrintResult(){
+    cout<<endl;
+    cout<<"进程"<<"\t"<<"到达时间"<<"\t"<<"服务时间"<<"\t"<<"周转时间"<<"\t"<<"带权周转时间"<<endl;
+    for(int i=0;i<4;i++){
+        process a = arr.front();
+        cout<<a.id<<"\t"<<a.arrive_time<<"\t\t"<<a.need_time<<"\t\t"<<a.revolve_time<<"\t\t"<<a.revolve_power_time<<endl;
+        arr.pop_front();
+    }
+}
+
+
+int main()
+{
+    //输入进程基本信息
+    for(int i=0;i<4;i++){
+        GetTask(i);
+    }
+
+    //选择实验并运行
+    for(int i=0;i<4;i++){
+        int temp = GetNextTask();
+        RunTask(temp);
+    }
+
+    //打印结果
+    PrintResult();
+
+    return 0;
+}
