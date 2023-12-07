@@ -1,0 +1,349 @@
+#include <bits/stdc++.h>
+using namespace std;
+int m,n,num=0;
+int arr[100];
+void FIFO();
+void OPI();
+void LRU();
+void LFU();
+int main()
+{
+    int mask;
+    cout<<"n最大为100,m最大为20"<<endl;
+    cout<<"先进先出页面置换算法(FIFO),请输入 1 "<<endl;
+    cout<<"最佳置换算法(OPI),请输入 2 "<<endl;
+    cout<<"最近最久未使用算法(LRU),请输入 3 "<<endl;
+    cout<<"最不经常使用算法(LFU),请输入 4 "<<endl;
+    cin>>mask;
+    cout << "请输入进程最小的物理块数：";
+    cin>>m;
+    cout << "请输入需要访问的页面个数：";
+    cin>>n;
+    cout << "请输入页面访问的序列（数字由空格隔开）：" << endl;
+    for(int i=0;i<n;i++){
+        cin>>arr[i];
+    }
+
+    if(mask == 1){
+        FIFO();
+    }else if(mask == 2){
+        OPI();
+    }else if(mask == 3){
+        LRU();
+    }else if(mask == 4){
+        LFU();
+    }
+
+    cout<<endl;
+    cout<<"缺页次数："<<num<<endl;
+    float s = 1.0 - (float)num/n;
+    cout<<"命中率：";
+    printf("%.2f",s*100);
+    cout<<"%"<<endl;
+    return 0;
+}
+
+void FIFO(){
+    deque<int> a;//双端队列
+    for(int i=0;i<n;i++){
+        if(a.size()<m){
+            int temp=0;
+            for(int j=0;j<a.size();j++){
+                if(a[j] == arr[i]){
+                    temp=1;
+                    break;
+                }
+            }
+            if(temp==1){
+                cout<<"第"<<i<<"轮：'"<<arr[i]<<"'被命中了";
+                cout<<"\t\t/";
+                for(int j=0;j<a.size();j++){
+                    cout<<a[j]<<"/";
+                }
+                cout<<endl;
+                continue;
+            }
+
+            a.push_back(arr[i]);
+            num++;
+            cout<<"第"<<i<<"轮：未命中，'"<<arr[i]<<"'被装入";
+            cout<<"\t/";
+            for(int j=0;j<a.size();j++){
+                cout<<a[j]<<"/";
+            }
+            cout<<endl;
+            continue;
+        }
+
+        int flag=0;
+        for(int j=0;j<m;j++){
+            if(a[j] == arr[i]){
+                flag=1;
+                break;
+            }
+        }
+        if(flag==1){
+            cout<<"第"<<i<<"轮：'"<<arr[i]<<"'被命中了";
+            cout<<"\t\t/";
+            for(int j=0;j<a.size();j++){
+                cout<<a[j]<<"/";
+            }
+            cout<<endl;
+            continue;
+        }
+
+        cout<<"第"<<i<<"轮：未命中，'"<<arr[i]<<"'替换了'"<<a.front()<<"'";
+        a.pop_front();
+        a.push_back(arr[i]);
+        cout<<"\t/";
+        for(int j=0;j<a.size();j++){
+            cout<<a[j]<<"/";
+        }
+        cout<<endl;
+        num++;
+    }
+}
+int han(int b[]){
+    int temp=0;
+    for(int i=0;i<m;i++){
+        if(b[i]!=0){
+            temp++;
+        }
+    }
+    return temp;
+}
+void OPI(){
+    int a[20];
+    memset(a,0,sizeof(a));
+    for(int i=0;i<n;i++){
+        if(han(a)<m){
+            int length=han(a);
+            int temp=0;
+            for(int j=0;j<length;j++){
+                if(a[j] == arr[i]){
+                    temp=1;
+                    break;
+                }
+            }
+            if(temp==1){
+                cout<<"第"<<i<<"轮：'"<<arr[i]<<"'被命中了";
+                cout<<"\t\t/";
+                for(int j=0;j<han(a);j++){
+                    cout<<a[j]<<"/";
+                }
+                cout<<endl;
+                continue;
+            }
+
+            a[length]=arr[i];
+            num++;
+            cout<<"第"<<i<<"轮：未命中，'"<<arr[i]<<"'被装入";
+            cout<<"\t/";
+            for(int j=0;j<han(a);j++){
+                cout<<a[j]<<"/";
+            }
+            cout<<endl;
+            continue;
+        }
+
+        int flag=0;
+        for(int j=0;j<m;j++){
+            if(a[j] == arr[i]){
+                flag=1;
+                break;
+            }
+        }
+        if(flag==1){
+            cout<<"第"<<i<<"轮：'"<<arr[i]<<"'被命中了";
+            cout<<"\t\t/";
+            for(int j=0;j<m;j++){
+                cout<<a[j]<<"/";
+            }
+            cout<<endl;
+            continue;
+        }
+
+        int c[20];
+        for(int j=0;j<20;j++){
+            c[j]=0xffff;
+        }
+        for(int k=0;k<m;k++){
+            for(int j=i+1;j<n;j++){
+                if(a[k]==arr[j]){
+                    c[k]=j;
+                    break;
+                }
+            }
+        }
+        int mx=0,y;
+        for(int j=0;j<m;j++){
+            if(c[j]>mx){
+                y=j;
+                mx=c[j];
+            }
+        }
+        cout<<"第"<<i<<"轮：未命中，'"<<arr[i]<<"'替换了'"<<a[y]<<"'";
+        a[y]=arr[i];
+        cout<<"\t/";
+        for(int j=0;j<m;j++){
+            cout<<a[j]<<"/";
+        }
+        cout<<endl;
+        num++;
+    }
+}
+void LRU(){
+    int a[20];
+    memset(a,0,sizeof(a));
+    for(int i=0;i<n;i++){
+        if(han(a)<m){
+            int length=han(a);
+            int temp=0;
+            for(int j=0;j<length;j++){
+                if(a[j] == arr[i]){
+                    temp=1;
+                    break;
+                }
+            }
+            if(temp==1){
+                cout<<"第"<<i<<"轮：'"<<arr[i]<<"'被命中了";
+                cout<<"\t\t/";
+                for(int j=0;j<han(a);j++){
+                    cout<<a[j]<<"/";
+                }
+                cout<<endl;
+                continue;
+            }
+
+            a[length]=arr[i];
+            num++;
+            cout<<"第"<<i<<"轮：未命中，'"<<arr[i]<<"'被装入";
+            cout<<"\t/";
+            for(int j=0;j<han(a);j++){
+                cout<<a[j]<<"/";
+            }
+            cout<<endl;
+            continue;
+        }
+
+        int flag=0;
+        for(int j=0;j<m;j++){
+            if(a[j] == arr[i]){
+                flag=1;
+                break;
+            }
+        }
+        if(flag==1){
+            cout<<"第"<<i<<"轮：'"<<arr[i]<<"'被命中了";
+            cout<<"\t\t/";
+            for(int j=0;j<m;j++){
+                cout<<a[j]<<"/";
+            }
+            cout<<endl;
+            continue;
+        }
+
+        int c[20];
+        memset(c,0,sizeof(c));
+        for(int k=0;k<m;k++){
+            for(int j=i-1;j>=0;j--){
+                if(a[k]==arr[j]){
+                    c[k]=j;
+                    break;
+                }
+            }
+        }
+        int mi=0xffff,y;
+        for(int j=0;j<m;j++){
+            if(c[j]<mi){
+                y=j;
+                mi=c[j];
+            }
+        }
+        cout<<"第"<<i<<"轮：未命中，'"<<arr[i]<<"'替换了'"<<a[y]<<"'";
+        a[y]=arr[i];
+        cout<<"\t/";
+        for(int j=0;j<m;j++){
+            cout<<a[j]<<"/";
+        }
+        cout<<endl;
+        num++;
+    }
+}
+void LFU(){
+    int a[20];
+    memset(a,0,sizeof(a));
+    for(int i=0;i<n;i++){
+        if(han(a)<m){
+            int length=han(a);
+            int temp=0;
+            for(int j=0;j<length;j++){
+                if(a[j] == arr[i]){
+                    temp=1;
+                    break;
+                }
+            }
+            if(temp==1){
+                cout<<"第"<<i<<"轮：'"<<arr[i]<<"'被命中了";
+                cout<<"\t\t/";
+                for(int j=0;j<han(a);j++){
+                    cout<<a[j]<<"/";
+                }
+                cout<<endl;
+                continue;
+            }
+
+            a[length]=arr[i];
+            num++;
+            cout<<"第"<<i<<"轮：未命中，'"<<arr[i]<<"'被装入";
+            cout<<"\t/";
+            for(int j=0;j<han(a);j++){
+                cout<<a[j]<<"/";
+            }
+            cout<<endl;
+            continue;
+        }
+
+        int flag=0;
+        for(int j=0;j<m;j++){
+            if(a[j] == arr[i]){
+                flag=1;
+                break;
+            }
+        }
+        if(flag==1){
+            cout<<"第"<<i<<"轮：'"<<arr[i]<<"'被命中了";
+            cout<<"\t\t/";
+            for(int j=0;j<m;j++){
+                cout<<a[j]<<"/";
+            }
+            cout<<endl;
+            continue;
+        }
+
+        int c[20];
+        memset(c,0,sizeof(c));
+        for(int k=0;k<m;k++){
+            for(int j=i-1;j>=0;j--){
+                if(a[k]==arr[j]){
+                    c[k]++;
+                }
+            }
+        }
+        int mi=0xffff,y;
+        for(int j=0;j<m;j++){
+            if(c[j]<mi){
+                y=j;
+                mi=c[j];
+            }
+        }
+        cout<<"第"<<i<<"轮：未命中，'"<<arr[i]<<"'替换了'"<<a[y]<<"'";
+        a[y]=arr[i];
+        cout<<"\t/";
+        for(int j=0;j<m;j++){
+            cout<<a[j]<<"/";
+        }
+        cout<<endl;
+        num++;
+    }
+}
