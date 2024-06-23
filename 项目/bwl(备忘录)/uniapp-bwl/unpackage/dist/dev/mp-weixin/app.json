@@ -1,0 +1,63 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/home/home",
+    "pages/user/user",
+    "pages/active/add",
+    "pages/active/add_db",
+    "pages/active/login",
+    "pages/active/register"
+  ],
+  "subPackages": [],
+  "window": {
+    "titleNView": false,
+    "bounce": "none",
+    "scrollIndicator": "none",
+    "navigationStyle": "custom"
+  },
+  "tabBar": {
+    "color": "#7A7E83",
+    "selectedColor": "#3cc51f",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "iconfontSrc": "static/fonts/iconfont.ttf",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "待办",
+        "iconfont": {
+          "text": "",
+          "selectedText": "",
+          "fontSize": "20px",
+          "color": "#7A7E83",
+          "selectedColor": "#3cc51f"
+        }
+      },
+      {
+        "pagePath": "pages/home/home",
+        "text": "笔记",
+        "iconfont": {
+          "text": "",
+          "selectedText": "",
+          "fontSize": "20px",
+          "color": "#7A7E83",
+          "selectedColor": "#3cc51f"
+        }
+      },
+      {
+        "pagePath": "pages/user/user",
+        "text": "个人中心",
+        "iconfont": {
+          "text": "",
+          "selectedText": "",
+          "fontSize": "20px",
+          "color": "#7A7E83",
+          "selectedColor": "#3cc51f"
+        }
+      }
+    ]
+  },
+  "usingComponents": {
+    "cu-custom": "/colorui/components/cu-custom"
+  }
+}

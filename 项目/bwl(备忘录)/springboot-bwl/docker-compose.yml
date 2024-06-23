@@ -1,0 +1,42 @@
+version : '3'
+services:
+  #sql服务
+  mysqldbserver:
+    #服务名称
+    container_name: mysqldbserver
+    #镜像
+    image: mysql:8.0.33
+    build:
+      context: .
+      dockerfile: Dockerfile
+    #端口
+    ports:
+      - "3309:3306"
+    command: [	#执行多条指令
+      'mysqld',
+      '--innodb-buffer-pool-size=20M',
+      '--character-set-server=utf8',
+      '--collation-server=utf8_general_ci',
+      '--default-time-zone=+8:00',
+      '--lower-case-table-names=1'
+    ]
+    environment:
+      # 数据库
+      MYSQL_DATABASE: bwl
+      # 设置root用户密码
+      MYSQL_ROOT_PASSWORD: 123456789
+  #spring服务
+  springappserver:
+    # 服务名称
+    container_name: springappserver
+    build:
+      context: .
+      dockerfile: Dockerfile1
+    ports:	#端口
+      - "8099:8099"
+    volumes:	#数据卷
+      - /
+    depends_on:
+      - mysqldbserver
+    links:	#连接sql
+      - mysqldbserver

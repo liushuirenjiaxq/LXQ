@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "待办",
+  "usingComponents": {
+    "uni-card": "/uni_modules/uni-card/components/uni-card/uni-card",
+    "u-loadmore": "/uview-ui/components/u-loadmore/u-loadmore",
+    "uni-fab": "/uni_modules/uni-fab/components/uni-fab/uni-fab",
+    "u-popup": "/uview-ui/components/u-popup/u-popup",
+    "u-icon": "/uview-ui/components/u-icon/u-icon",
+    "u-textarea": "/uview-ui/components/u-textarea/u-textarea"
+  }
+}

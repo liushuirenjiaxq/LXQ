@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "笔记",
+  "usingComponents": {
+    "uni-card": "/uni_modules/uni-card/components/uni-card/uni-card",
+    "u-loadmore": "/uview-ui/components/u-loadmore/u-loadmore",
+    "uni-fab": "/uni_modules/uni-fab/components/uni-fab/uni-fab"
+  }
+}

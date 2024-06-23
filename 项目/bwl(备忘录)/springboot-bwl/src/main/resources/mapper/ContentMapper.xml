@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bwl.mapper.ContentMapper">
+    <resultMap id="BaseResultMap" type="com.bwl.pojo.Content">
+        <id column="id" property="id" />
+        <result column="own_id" property="ownId" />
+        <result column="title" property="title" />
+        <result column="text" property="text" />
+        <result column="time" property="time" />
+    </resultMap>
+
+    <insert id="insertContent">
+        INSERT INTO bwl_content (own_id, title, text, time) VALUES (#{ownId},#{title},#{text},#{time})
+    </insert>
+
+    <update id="updateContent">
+        UPDATE bwl_content SET title = #{title},text = #{text},time = #{time} WHERE id = #{id}
+    </update>
+
+    <delete id="deleteByIdInt">
+        DELETE FROM bwl_content WHERE id = #{id}
+    </delete>
+
+    <select id="selectContentId" resultMap="BaseResultMap">
+        select id,own_id,title,text,time  from bwl_content where own_id = #{id}
+    </select>
+
+    <select id="selectContent" resultType="java.lang.Integer">
+        SELECT id FROM bwl_content WHERE own_id = #{ownId} AND time = #{time}
+    </select>
+
+</mapper>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bwl.mapper.UserMapper">
+    <resultMap id="BaseResultMap" type="com.bwl.pojo.User">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="tele" property="tele" />
+        <result column="password" property="password" />
+    </resultMap>
+    <insert id="insertUser">
+        INSERT INTO bwl_user (name, tele, password) VALUES (#{name},#{tele},#{password})
+    </insert>
+
+    <!--两种方式-->
+    <select id="selectUserId" resultType="com.bwl.pojo.User">
+        select id,name,tele,password  from bwl_user where id = #{id}
+    </select>
+    <select id="selectUserAll" resultMap="BaseResultMap">
+        select id,name,tele,password from bwl_user
+    </select>
+
+    <select id="selectUserLogin" resultType="com.bwl.pojo.User">
+        select id,name,tele,password  from bwl_user where tele = #{phone} and password = #{password}
+    </select>
+    <select id="selectUserTele" resultType="com.bwl.pojo.User">
+        select id,name,tele,password  from bwl_user where tele = #{phone}
+    </select>
+</mapper>
